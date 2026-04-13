@@ -1,0 +1,54 @@
+backend: megatron
+
+run:
+  experiment_name: grpo-reasoning-bootstrap
+  seed: 42
+
+data:
+  train_paths:
+    - "data/processed/open_r1_mixture.jsonl"
+  eval_paths:
+    - "data/processed/val_math.jsonl"
+  num_workers: 8
+
+optimization:
+  lr: 1e-5
+  weight_decay: 0.01
+  gradient_clipping: 1.0
+
+tokens:
+  max_seq_length: 2048
+  train_max_len: 1536
+  pad_to_multiple_of: 8
+
+rl:
+  perform_rl_step: true
+  rl_algorithm: grpo
+  grpo_prompts_per_step: 16
+  grpo_group_size: 8
+  grpo_iterations: 2
+  grpo_micro_batch_size: 2
+  grpo_grad_accum_steps: 4
+  grpo_clamp_eps_lower: 0.2
+  grpo_clamp_eps_upper: 0.2
+  grpo_kl_beta: 0.001
+  grpo_entropy_term_weight: 0.001
+  grpo_norm_beta: 0.0
+  reward:
+    mode: llm_judge
+    judge_model: "gpt-4o-mini"
+    judge_backend: openai
+    reward_scale: 1.0
+  langrl:
+    enabled: true
+    env_config: "configs/langrl_openr1_env.json"
+
+logging:
+  log_every_n_steps: 20
+  eval_every_n_steps: 2000
+  save_every_n_steps: 2000
+  wandb_project: "grpo-open-eurolm"
+
+checkpoints:
+  output_dir: "outputs/grpo-bootstrap"
+  save_total_limit: 5

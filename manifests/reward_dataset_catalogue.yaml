@@ -1,0 +1,28 @@
+version: 1
+kind: reward_dataset_catalogue
+goal: "Reward and preference data sources for GRPO/DPO-style objectives"
+sources:
+  - name: openbmb/UltraFeedback
+    domain: general
+    type: preference_dataset
+    role: "pairwise_preference"
+    quality: "high"
+    url: https://huggingface.co/datasets/openbmb/UltraFeedback
+    usage_hint: "Build reward model or calibrate judge scoring before RL rollout."
+
+  - name: "gpt-4o-judge-style_heuristics"
+    domain: synthetic
+    type: reward_function
+    role: "LLM_judge_template"
+    quality: "variable"
+    url: ""
+    usage_hint: "Use only for bootstrap; monitor drift and inter-judge variance."
+
+  - name: "self-consistency_vote"
+    domain: synthetic
+    type: reward_function
+    role: "verifier"
+    quality: "high"
+    url: ""
+    usage_hint: "Use deterministic verification where answers are machine-checkable."
+*** End Patch

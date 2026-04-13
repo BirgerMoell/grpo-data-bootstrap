@@ -1,0 +1,36 @@
+version: 1
+kind: reasoning_dataset_catalogue
+goal: "Open, high-signal reasoning datasets for SFT-style warm-up and GRPO exploration"
+sources:
+  - name: open-r1/mixture-of-thoughts
+    domain: reasoning
+    type: trace_dataset
+    strength: "strong"
+    notes: "General reasoning traces (math/code/science). Good first-stage policy shaping."
+    quality: "high"
+    url: https://huggingface.co/datasets/open-r1/mixture-of-thoughts
+
+  - name: open-r1/OpenR1-Math-220k
+    domain: math
+    type: trace_dataset
+    strength: "high"
+    notes: "Math-heavy traces with multi-step solving structure."
+    quality: "high"
+    url: https://huggingface.co/datasets/open-r1/OpenR1-Math-220k
+
+  - name: open-r1/codeforces-cots
+    domain: code
+    type: trace_dataset
+    strength: "medium"
+    notes: "Code reasoning and algorithmic traces."
+    quality: "medium"
+    url: https://huggingface.co/datasets/open-r1/codeforces-cots
+
+  - name: a-m-team/AM-DeepSeek-R1-Distilled-1.4M
+    domain: mixed
+    type: trace_dataset
+    strength: "high"
+    notes: "Large distilled trace collection with practical filtering."
+    quality: "high"
+    url: https://huggingface.co/datasets/a-m-team/AM-DeepSeek-R1-Distilled-1.4M
+*** End Patch
