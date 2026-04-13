@@ -19,6 +19,78 @@ It includes:
 - `scripts/download_datasets.sh` – fetch HF datasets (requires `huggingface-cli`)
 - `scripts/convert_to_grpo_jsonl.py` – normalize dataset rows into generic format
 
+## New: ELO proxy CLI library
+
+`grpo-elo` is a new CLI utility to turn model-level ELO scores into a trainable quality proxy.
+
+It supports:
+
+- model map normalization from an LMArena-like source table (`build-model-map`)
+- training a regression model from samples + model IDs and/or target columns (`train`)
+- scoring any file of samples (`score`)
+- evaluating a saved model (`evaluate`)
+
+Installed via local package, this becomes a reusable CLI:
+
+```bash
+cd /Users/birger/ai_sweden/grpo-data-bootstrap
+pip install -e .
+grpo-elo --help
+```
+
+Example end-to-end:
+
+1) Build model map:
+
+```bash
+grpo-elo build-model-map \
+  --source manifests/model_elo_input.csv \
+  --model-col model_name \
+  --elo-col elo \
+  --snapshot-col snapshot_date \
+  --out manifests/model_elo_map.csv
+```
+
+`manifests/model_elo_input.csv` should include one row per model snapshot, for example:
+
+`model_name,elo,snapshot_date`
+
+2) Train model-quality predictor:
+
+```bash
+grpo-elo train \
+  --samples data/processed/open_r1_mixture.jsonl \
+  --model-col model_id \
+  --model-map manifests/model_elo_map.csv \
+  --prompt-col prompt \
+  --response-col response \
+  --numeric-features response_score reward_raw \
+  --algorithm ridge \
+  --out-dir models/elo-regressor
+```
+
+This creates:
+
+- `models/elo-regressor/elo_model.joblib`
+- `models/elo-regressor/metrics.json`
+
+3) Score new samples and use `elo_pred` as a prior for training data filtering:
+
+```bash
+grpo-elo score \
+  --model models/elo-regressor/elo_model.joblib \
+  --samples data/processed/open_r1_mixture.jsonl \
+  --out data/processed/open_r1_mixture_with_elo_pred.jsonl \
+  --prompt-col prompt \
+  --response-col response
+```
+
+Suggested integration with your GRPO flow:
+
+- Use `elo_pred` for pre-sampling and filtering.
+- Combine with verifier/judge score when scoring quality for policy optimization.
+- Keep ELO-based score as a prior, not as the only reward.
+
 ## Quick start
 
 1. Install prerequisites

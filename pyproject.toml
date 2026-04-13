@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "grpo-data-bootstrap"
+version = "0.1.0"
+description = "CLI library for model-provenance quality scoring and GRPO data bootstrapping"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "datasets>=2.21.0",
+  "huggingface-hub>=0.24.0",
+  "joblib>=1.4",
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "pyyaml>=6.0",
+  "scikit-learn>=1.5",
+]
+
+[project.scripts]
+grpo-elo = "elo_quality.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+include = ["elo_quality*"]

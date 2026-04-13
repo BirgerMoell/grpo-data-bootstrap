@@ -1,0 +1,5 @@
+model_name,elo,snapshot_date
+gpt-4o,3700,2026-03-01
+deepseek-v2-lite,2950,2026-03-01
+llama3-70b,2900,2026-03-01
+open-r1-7b,3200,2026-03-01
